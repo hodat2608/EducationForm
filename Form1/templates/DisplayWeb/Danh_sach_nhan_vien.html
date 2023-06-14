@@ -345,6 +345,7 @@
               <td>{{ Nhanvien.Hoten }}</td>
               <td>{{ Nhanvien.Msnv }}</td>
               <td>{{ Nhanvien.Phongban }}</td>
+              <td><a href="{% url 'Form1:List_thong_tin' Nhanvien.id %}">Danh sách </a></td>
               <td>
             </tr>
           {% endfor %}
