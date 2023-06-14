@@ -1,0 +1,27 @@
+<h1>Nhân viên: {{ nhan_vien.Hoten }}</h1>
+<h1>Thông tin chi tiết:</h1>
+<table>
+    <thead>
+      <tr>
+        <th>Ngày kiểm tra:</th>
+        <th>Đối tượng đánh giá: </th>
+        <th>Thời gian TC: </th>
+        <th>Mã học trình: </th>
+        <th>Điểm: </th>
+        <th>Phán định: </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for list_infor in nhan_vien.thong_tin_nhan_vien_set.all %}
+      <tr>
+        <td>{{ list_infor.Ngay_kiem_tra }}</td>
+        <td>{{ list_infor.Doi_tuong_danh_gia }}</td>
+        <td>{{ list_infor.Lan_danh_gia }}</td>
+        <td>{{ list_infor.Thoi_gian_TC }}</td>
+        <td>{{ list_infor.Ma_hoc_trinh }}</td>
+        <td>{{ list_infor.Diem }}</td>
+        <td>{{ list_infor.Phan_dinh }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+</table>
