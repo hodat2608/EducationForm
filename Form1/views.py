@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import login as auth_login
 from django.shortcuts import render
-from .forms import Add_nhanvien_Form 
+from .forms import Add_nhanvien_Form, Evaluate
 
 class List_nhan_vien(generic.ListView):
     template_name = 'DisplayWeb/Danh_sach_nhan_vien.html'
@@ -40,4 +40,25 @@ def add_nhan_vien(request):
     else:
         form = Add_nhanvien_Form()
     return redirect('Form1:List_nhan_vien')
-                    
+
+def Evaluation(request,id_nhanvien):
+    staff = Nhan_vien.objects.get(pk=id_nhanvien)
+    if request.method == 'POST':
+        form = Evaluate(request.POST)
+        if form.is_valid():
+            Ngay_kiem_tra = form.cleaned_data['Ngay_kiem_tra']
+            doituongdanhgia = form.cleaned_data['Doi_tuong_danh_gia']
+            landanhgia = form.cleaned_data['Lan_danh_gia']   
+            thoigiantc = form.cleaned_data['Thoi_gian_TC']   
+            mahoctrinh = form.cleaned_data['Ma_hoc_trinh']  
+            diem = form.cleaned_data['Diem']  
+            phandinh = form.cleaned_data['Phan_dinh']
+            evalated = Thong_tin_nhan_vien(key_id = id_nhanvien,Ngay_kiem_tra=Ngay_kiem_tra,
+            Doi_tuong_danh_gia=doituongdanhgia,Lan_danh_gia=landanhgia,
+            Thoi_gian_TC=thoigiantc,Ma_hoc_trinh=mahoctrinh,
+            Diem=diem,Phan_dinh=phandinh)
+            evalated.save()
+            return redirect(reverse('Form1:List_thong_tin', args=(staff.id,)))
+    else: 
+        form = Evaluate()
+    return render(request,'DisplayWeb/EvaluateForm.html', {'form': form,'staff': staff}) 

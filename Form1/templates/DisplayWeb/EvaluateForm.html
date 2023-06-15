@@ -1,0 +1,67 @@
+{% comment %}
+<h1>Form đánh giá </h1>
+<form action="{% url 'Form1:evaluate' staff.id %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Add">
+{% if error_messsage %}
+<strong>{{ error_messsage }}</strong>
+{% endif %}
+</form>
+<a href="{% url 'Form1:List_thong_tin' staff.id%}">Trở về</a>
+{%endcomment %}
+
+<style>
+  .checkbox-inline {
+      display: inline;
+      margin-right: 10px;
+      }
+    .checkbox-group {
+        display: flex;
+        flex-direction: row;
+    }
+    
+    .checkbox-group label {
+        margin-right: 10px;
+    }
+</style>
+<h1>Form đánh giá </h1>
+<form action="{% url 'Form1:evaluate' staff.id %}" method="post">
+    {% csrf_token %}
+    <p><strong>Ngày đánh giá:</strong></p>
+    {{ form.Ngay_kiem_tra }}
+    <p><strong>Đối tượng đánh giá:</strong></p>
+      <div class="checkbox-group">
+        <input type="checkbox" id="1" name="Doi_tuong_danh_gia" value="Nhân viên thao tác">
+        <label for="1">Nhân viên thao tác</label>
+        <input type="checkbox" id="2" name="Doi_tuong_danh_gia" value="Nhân viên mới">
+        <label for="2">Nhân viên mới</label>
+        <input type="checkbox" id="3" name="Doi_tuong_danh_gia" value="Nhân viên đa năng CD">
+        <label for="3">Nhân viên đa năng CD</label>
+        <input type="checkbox" id="4" name="Doi_tuong_danh_gia" value="Người hướng dẫn">
+        <label for="4">Người hướng dẫn</label>
+    </div>
+    <p><strong>Lần đánh giá:</strong></p>
+      <div class="checkbox-group">
+        <input type="checkbox" id="5" name="Lan_danh_gia" value="Đánh giá lần đầu">
+        <label for="5">Đánh giá lần đầu</label>
+        <input type="checkbox" id="6" name="Lan_danh_gia" value="Tái đánh giá định kỳ">
+        <label for="6">Tái đánh giá định kỳ</label>
+        <input type="checkbox" id="7" name="Lan_danh_gia" value="Tái đánh giá xác suất">
+        <label for="7">Tái đánh giá xác suất</label>
+    </div>
+    <p><strong>Thời gian TC:</strong></p>
+    {{ form.Thoi_gian_TC }}
+    <p><strong>Mã học trình:</strong></p>
+    {{ form.Ma_hoc_trinh }}
+    <p><strong>Điểm:</strong></p>
+    {{ form.Diem }}
+    <p><strong>Phán định:</strong></p>
+    {{ form.Phan_dinh }}
+    {% if error_messsage %}
+        <strong>{{ error_messsage }}</strong>
+    {% endif %}
+    <br>
+    <input type="submit" value="Thêm">
+</form>
+<a href="{% url 'Form1:List_thong_tin' staff.id%}">Trở về</a>
