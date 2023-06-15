@@ -4,6 +4,8 @@ class Nhan_vien(models.Model):
     Hoten = models.CharField(max_length=20,default="")
     Msnv =  models.IntegerField(max_length=5,default="")
     Phongban = models.CharField(max_length=20,default="")
+    def __str__(self):
+        return self.Hoten
    
 class Thong_tin_nhan_vien(models.Model):
     key = models.ForeignKey(Nhan_vien, on_delete=models.CASCADE)
