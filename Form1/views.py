@@ -62,3 +62,24 @@ def Evaluation(request,id_nhanvien):
     else: 
         form = Evaluate()
     return render(request,'DisplayWeb/EvaluateForm.html', {'form': form,'staff': staff}) 
+
+def Evaluated_form(request,id_nhanvien):
+    infor_form = get_object_or_404(Thong_tin_nhan_vien,pk=id_nhanvien)
+    staff_id = infor_form.key_id
+    staff_infor_form = get_object_or_404(Nhan_vien,pk=staff_id)
+    return render(request, 'DisplayWeb/detail_infor_form.html', {'infor_form': infor_form, 'staff_infor_form':staff_infor_form})
+
+def Delete_staff(request,id_nhanvien):
+    del_staff = get_object_or_404(Nhan_vien,pk=id_nhanvien)
+    del_staff.delete()
+    return HttpResponseRedirect(reverse('Form1:List_nhan_vien'))
+
+def Delete_infor(request,id_nhanvien):
+    del_infor = get_object_or_404(Thong_tin_nhan_vien, pk=id_nhanvien)
+    del_infor.delete()
+    return HttpResponseRedirect(reverse('Form1:List_thong_tin'))
+
+
+
+
+    

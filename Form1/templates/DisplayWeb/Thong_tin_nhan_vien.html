@@ -195,6 +195,43 @@
     th {
       background-color: #f2f2f2;
     }
+  }
+    .dropdown {
+    position: relative;
+    display: inline-block;
+    }
+
+    .dropbtn {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      min-width: 160px;
+      z-index: 1;
+    }
+
+    .dropdown-content a {
+      color: black;
+      padding: 8px 12px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .dropdown .dropdown-icon {
+      font-size: 18px;}
+      *,*:after,*:before {
+      box-sizing:border-box;
+      -moz-box-sizing:border-box;
+      -webkit-box-sizing:border-box;
+        }
   </style>
 </head>
 <body>
@@ -217,6 +254,14 @@
           <td>{{ list_infor.Diem }}</td>
           <td>{{ list_infor.Phan_dinh }}</td>
           <td>
+            <div class="dropdown">
+              <button class="dropbtn"><i class="fas fa-ellipsis-v dropdown-icon"></i></button>
+              <div class="dropdown-content">
+                <a href="{% url 'Form1:evaluate_form' list_infor.id%}">Chi tiết</a>
+                <a href="{% url 'Form1:del_infor' list_infor.id%}">Xóa thông tin</a>
+              </div>
+            </div>
+          </td>
         </tr>
       {% endfor %}
     </tbody>
