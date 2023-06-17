@@ -95,26 +95,15 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="content-holder">
-      {% block 1_content %}
-        <h2>Login</h2>
-        <form class="login-form-container" method="post">
-          {% csrf_token %}
-          {{ form.as_p }}
-          <button type="submit" class="login-button">Đăng nhập</button>
-          <p><strong>No account yet? </strong> <a href="{% url 'artisr:user_signup' %}">Signup</a></p>
-        </form>
-      </div>
-    </div>
-      {% endblock %}
-    <div class="content-holder">
-      {% block 2_content %}
+  <div>
+    <div>
+    <div >
+      {% block content %}
         <h1>Đăng ký</h1>
-        <form class="signup-form-container" method="post">
+        <form method="post">
           {% csrf_token %}
           {{ form.as_p }}
-          <button type="submit" class="signup-button">Đăng ký</button>
+          <button type="submit">Đăng ký</button>
         </form>
       {% endblock %}
     </div>

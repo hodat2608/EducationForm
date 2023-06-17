@@ -14,6 +14,7 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import login as auth_login
 from django.shortcuts import render
 from .forms import Add_nhanvien_Form, Evaluate
+import csv
 
 class List_nhan_vien(generic.ListView):
     template_name = 'DisplayWeb/Danh_sach_nhan_vien.html'
@@ -33,7 +34,7 @@ def add_nhan_vien(request):
             msnv = form.cleaned_data['Msnv']
             phong_ban = form.cleaned_data['Phongban']
             if Nhan_vien.objects.filter(Hoten=ho_ten).exists():
-                return render(request, 'DisplayWeb/Danh_sach_nhan_vien.html',{ 'error1': "nhan vien nay da ton tai!",})
+                return render(request, 'DisplayWeb/Danh_sach_nhan_vien.html',{ 'error1': "Nhân viên đã tồn tại!",})
             add_nv = Nhan_vien.objects.create(Hoten=ho_ten,Msnv=msnv,Phongban=phong_ban)
             add_nv.save()
             return redirect('Form1:List_nhan_vien')
@@ -77,9 +78,62 @@ def Delete_staff(request,id_nhanvien):
 def Delete_infor(request,id_nhanvien):
     del_infor = get_object_or_404(Thong_tin_nhan_vien, pk=id_nhanvien)
     del_infor.delete()
-    return HttpResponseRedirect(reverse('Form1:List_thong_tin'))
+    return HttpResponseRedirect(reverse('Form1:List_thong_tin', args=(del_infor.key_id,)))
 
+def search_staff(request):
+    if request.method == 'GET':
+        query = request.GET.get('query')
+        show_form = True
+        if query:
+            Nhanviens = Nhan_vien.objects.filter(Msnv__icontains=query)
+            if not Nhanviens: 
+                return render(request, 'DisplayWeb/Danh_sach_nhan_vien.html', {
+                        'error2': "Không tìm thấy mã nhân viên! ",
+                    }) 
+        else:
+            Nhanviens = Nhan_vien.objects.filter
+        context = {'Nhanviens': Nhanviens , 'show_form': show_form}
+        return render(request, 'DisplayWeb/Danh_sach_nhan_vien.html', context)
+    
+def import_csv(request):
+    if request.method == 'POST' and request.FILES['csv_file']:
+        csv_file = request.FILES['csv_file']
+        decoded_file = csv_file.read().decode('utf-8-sig').splitlines()
+        csv_reader = csv.reader(decoded_file)
+        next(csv_reader) 
+        for row in csv_reader:
+            hoten = row[0]
+            msnv = int(row[1])
+            phongban = row[2]
+            add_nhan_vien = Nhan_vien.objects.create(Hoten=hoten,Msnv=msnv,Phongban=phongban)
+            add_nhan_vien.save()
+        return render(request, 'DisplayWeb/Danh_sach_nhan_vien.html')
+    return render(request, 'DisplayWeb/Danh_sach_nhan_vien.html')
 
+def user_signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('Form1:List_nhan_vien')
+    else:
+        form = UserCreationForm()
+    return render(request, 'DisplayWeb/signup.html', {'form': form})
+def user_login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            auth_login(request, user)
+            request.session['username'] = user.username
+            return redirect('Form1:List_nhan_vien')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'DisplayWeb/login.html', {'form': form})
+def user_logout(request):
+    del request.session['username']
+    auth_logout(request)
+    return redirect('Form1:List_nhan_vien')
 
 
     
