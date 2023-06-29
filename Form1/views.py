@@ -20,12 +20,30 @@ class List_nhan_vien(generic.ListView):
     template_name = 'DisplayWeb/Danh_sach_nhan_vien.html'
     context_object_name = 'Nhanviens'
     def get_queryset(self):
-        return Nhan_vien.objects.all() 
+        if self.request.user.is_authenticated:
+            user = self.request.user
+            return Nhan_vien.objects.filter(user=user)
+        else:
+            return redirect('Form1:List_nhan_vien')
 
-class list_thongtinnhanvien(generic.DetailView):
-    model = Nhan_vien
-    template_name = 'DisplayWeb/Thong_tin_nhan_vien.html'    
 
+# class list_thongtinnhanvien(generic.DetailView):
+#     model = Nhan_vien
+#     template_name = 'DisplayWeb/Thong_tin_nhan_vien.html'
+
+def homepage(request,id_nhanvien): #81
+    list_inforS = Thong_tin_nhan_vien.objects.filter(key_id=id_nhanvien)
+    name = Nhan_vien.objects.get(id = id_nhanvien)
+    context = {'list_inforS':list_inforS,'name':name}
+    return render(request, 'DisplayWeb/Thong_tin_nhan_vien.html', context)
+
+def Global(request): 
+    if request.method == 'POST':
+        Nhanviens = Nhan_vien.objects.all()
+        return render(request, 'DisplayWeb/Danh_sach_nhan_vien.html', {'Nhanviens': Nhanviens})
+    else:
+        return redirect('Form1:List_nhan_vien')
+    
 def add_nhan_vien(request):
     if request.method == "POST": 
         form = Add_nhanvien_Form(request.POST)
@@ -35,9 +53,9 @@ def add_nhan_vien(request):
             phong_ban = form.cleaned_data['Phongban']
             if Nhan_vien.objects.filter(Hoten=ho_ten).exists():
                 return render(request, 'DisplayWeb/Danh_sach_nhan_vien.html',{ 'error1': "Nhân viên đã tồn tại!",})
-            add_nv = Nhan_vien.objects.create(Hoten=ho_ten,Msnv=msnv,Phongban=phong_ban)
+            add_nv = Nhan_vien.objects.create(user=request.user, Hoten=ho_ten,Msnv=msnv,Phongban=phong_ban)
             add_nv.save()
-            return redirect('Form1:List_nhan_vien')
+            return redirect(reverse('Form1:List_nhan_vien'))
     else:
         form = Add_nhanvien_Form()
     return redirect('Form1:List_nhan_vien')
@@ -101,14 +119,20 @@ def import_csv(request):
         decoded_file = csv_file.read().decode('utf-8-sig').splitlines()
         csv_reader = csv.reader(decoded_file)
         next(csv_reader) 
+        duplicate_datas = []
         for row in csv_reader:
             hoten = row[0]
-            msnv = int(row[1])
+            msnv = int(row[1])  
             phongban = row[2]
-            add_nhan_vien = Nhan_vien.objects.create(Hoten=hoten,Msnv=msnv,Phongban=phongban)
-            add_nhan_vien.save()
-        return render(request, 'DisplayWeb/Danh_sach_nhan_vien.html')
-    return render(request, 'DisplayWeb/Danh_sach_nhan_vien.html')
+            if Nhan_vien.objects.filter(Hoten=hoten).exists():
+                duplicate_datas.append(hoten)
+            else :
+                add_nhan_vien = Nhan_vien.objects.create(Hoten=hoten,Msnv=msnv,Phongban=phongban)
+                add_nhan_vien.save()
+        if duplicate_datas: 
+            return render(request, 'DisplayWeb/Danh_sach_nhan_vien.html',{'duplicate_datas': duplicate_datas , 'error3': "Nhân viên !",})       
+        return redirect('Form1:List_nhan_vien')
+    return redirect('Form1:List_nhan_vien')
 
 def user_signup(request):
     if request.method == 'POST':
@@ -133,7 +157,7 @@ def user_login(request):
 def user_logout(request):
     del request.session['username']
     auth_logout(request)
-    return redirect('Form1:List_nhan_vien')
+    return redirect('Form1:user_login')
 
 
     

@@ -195,7 +195,7 @@
     th {
       background-color: #f2f2f2;
     }
-  }
+ 
     .dropdown {
     position: relative;
     display: inline-block;
@@ -235,7 +235,7 @@
   </style>
 </head>
 <body>
-  <h2>Thông tin đánh giá cho {{ nhan_vien.Hoten}} </h2>
+  <h2>Thông tin đánh giá cho {{name.Hoten}} </h2>
   <table class="md-table">
     <thead>
       <tr class="md-table-header">
@@ -247,18 +247,18 @@
       </tr>
     </thead>
     <tbody>
-      {% for list_infor in nhan_vien.thong_tin_nhan_vien_set.all %}
+      {% for infor in list_inforS %}
         <tr class="md-table-content">
-          <td>{{ list_infor.id }}</td>
-          <td>{{ list_infor.Ngay_kiem_tra }}</td>
-          <td>{{ list_infor.Diem }}</td>
-          <td>{{ list_infor.Phan_dinh }}</td>
+          <td>{{ infor.id }}</td>
+          <td>{{ infor.Ngay_kiem_tra }}</td>
+          <td>{{ infor.Diem }}</td>
+          <td>{{ infor.Phan_dinh }}</td>
           <td>
             <div class="dropdown">
               <button class="dropbtn"><i class="fas fa-ellipsis-v dropdown-icon"></i></button>
               <div class="dropdown-content">
-                <a href="{% url 'Form1:evaluate_form' list_infor.id %}">Chi tiết</a>
-                <a href="{% url 'Form1:del_infor' list_infor.id %}">Xóa thông tin</a>
+                <a href="{% url 'Form1:evaluate_form' infor.id %}">Chi tiết</a>
+                <a href="{% url 'Form1:del_infor' infor.id %}">Xóa thông tin</a>
               </div>
             </div>
           </td>
@@ -267,7 +267,7 @@
     </tbody>
   </table>
 <br></br>
-<a href="{% url 'Form1:evaluate' nhan_vien.id%}">Làm bài đánh giá</a>
+
 <br></br>
 <a href="{% url 'Form1:List_nhan_vien'%}">Trở về</a>
 </main>

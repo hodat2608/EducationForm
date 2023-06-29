@@ -318,7 +318,7 @@
     }
     .form-container {
         display: inline-block;
-        margin-right: 190px; 
+        margin-right: 140px; 
     }
     .right-align {
         float: right;
@@ -349,16 +349,16 @@
         <li><a href="#">About</a></li>
         <div style="position:absolute; left:1280px; top: 0.1em;">
           {% if request.session.username %}
-          <ul class="inline-list" style="position:absolute; left:50px; top: 10px;display: flex; align-items: center;" > 
-            <h1 style=" margin-right: 20px; "> Hi! {{ request.session.username }}</h1>
+          <ul class="inline-list" style="position:absolute; left:10px; top: 10px;display: flex; align-items: center;" > 
+            <h1 style=" margin-right: 10px; "> Hi! {{ request.session.username }}</h1>
               <form action="{% url 'Form1:user_logout' %}" method="get" class="button-form">
                 <input class= "button" type="submit" value="Logout">
               </form>
           </ul>
           {% else %}
-          <ul class="inline-list"  style="position:absolute; left:50px; top: 25px;" > 
+          <ul class="inline-list"  style="position:absolute; left:px; top: 25px;" > 
             <li class= "button"><a href="{% url 'Form1:user_login'%}">Login</a></li>
-            <li class= "button" style="margin-left: 30px;"><a href="{% url 'Form1:user_signup'%}">Signup</a></li>
+            <li class= "button" style="margin-left: 10px;"><a href="{% url 'Form1:user_signup'%}">Signup</a></li>
           </ul>
           {% endif %}
         </div>
@@ -373,7 +373,12 @@
           <input type="file" name="csv_file" accept=".csv">
           <button type="submit">Import</button>
       </form>
-    </div>   
+    <div class = "form-container"> 
+        <form action="{% url 'Form1:global_user' %}" method='post'>
+          {% csrf_token %}
+          <button type="submit">Global</button>
+        </form>
+    </div>  
     <div class = "form-container">
         <form class = "search-container" action="{% url 'Form1:search_staff' %}" method="get">
           <input class = "input" type="text" name="query" placeholder="Tìm kiếm theo mã nhân viên">
@@ -384,24 +389,29 @@
       <table class="md-table">
         <thead>
           <tr class="md-table-header">
+            <th>ID staff</th>
             <th>Tên nhân viên</th>
             <th>MSVN</th>
             <th>Phòng Ban</th>
+            <th>From account</th>
             <th></th>
+            
           </tr>
         </thead>
         <tbody>
           {% for Nhanvien in Nhanviens %}
             <tr class="md-table-content">
+              <td>{{ Nhanvien.id }}</td>
               <td>{{ Nhanvien.Hoten }}</td>
               <td>{{ Nhanvien.Msnv }}</td>
               <td>{{ Nhanvien.Phongban }}</td>
+              <td>{{ Nhanvien.user.username}}</td>
               <td>
                 <div class="dropdown">
                   <button class="dropbtn"><i class="fas fa-ellipsis-v dropdown-icon"></i></button>
                   <div class="dropdown-content">
-                    <a href="{% url 'Form1:List_thong_tin' Nhanvien.id %}">Danh sách </a>
-                    <a href="{% url 'Form1:del_staff' Nhanvien.id %}">Delete</a>
+                      <a href="{% url 'Form1:homelage' Nhanvien.id %}">Danh sách </a>
+                <a href="{% url 'Form1:del_staff' Nhanvien.id %}">Delete</a>
                   </div>
                 </div>
               </td>              
@@ -428,7 +438,16 @@
       {% if error2 %}
         <strong>{{ error2 }}</strong>
       {% endif %}
+      {% if error3 %}
+      <br></br>
+        {% if duplicate_datas %}
+          {% for name in duplicate_datas %}
+          <strong> Nhân viên {{ name }} đã tồn tại!</strong><br></br>
+          {% endfor %}
+          <strong> Hãy kiểm tra lại danh sách trước khi nhập CSV!</strong>
+      {% endif %}
     {% endif %}
+  {% endif %}
   </main>
   <footer>
     <div>©2023 Web cơ bản của Hồ Thành Đạt</div>
